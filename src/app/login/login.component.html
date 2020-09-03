@@ -1,0 +1,25 @@
+<div class="login">
+    <h2 class="login-header">Log in</h2>
+    <form [formGroup]="authForm" class="login-container" (ngSubmit)="onSubmit()">
+      <p [ngClass]="{ 'has-error': isSubmitted && authForm.controls['userNameControl']?.errors }">
+        <input type="text" placeholder="Username" formControlName="userNameControl">
+      </p>
+      <div *ngIf="isSubmitted && authForm.controls['userNameControl']?.errors" class="help-block">
+        <div *ngIf="authForm.controls['userNameControl']?.errors.required">Username is required</div>
+       </div>
+      <p [ngClass]="{ 'has-error': isSubmitted && authForm.controls['passwordControl']?.errors }">
+        <input type="password" placeholder="Password" formControlName="passwordControl">
+      </p>
+      <div *ngIf="isSubmitted && authForm.controls['passwordControl']?.errors" class="help-block">
+        <div *ngIf="authForm.controls['passwordControl']?.errors.required">Password is required</div>
+      </div>
+      <p>
+        <button [disabled]="loading" type="submit" >Log in
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        </button> 
+      </p>
+      <p class="validation-message red-error" *ngIf="authForm.errors?.authError.failed">
+        Authentication failed!
+      </p>
+    </form>
+</div>

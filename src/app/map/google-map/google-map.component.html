@@ -1,0 +1,21 @@
+<div *ngIf = "!allDataReady">
+  <br/>
+  <mat-spinner class="centered" color="warn"></mat-spinner>
+</div>
+
+<br/>
+<br/>
+
+<div *ngIf="allDataReady">
+    <agm-map [latitude]="origin?.lat" [longitude]="origin?.lng">
+        <!-- Origin marker -->
+        <agm-marker  
+        [latitude]="origin?.lat" [longitude]="origin?.lng"
+        [label]="{color: 'green', text: origin?.label, fontWeight: 'bold'}"></agm-marker>
+        <!-- All other markers -->
+        <agm-marker *ngFor="let waypoint of mapData.waypoints" 
+        [latitude]="waypoint.location?.lat" [longitude]="waypoint.location?.lng"
+        [label]="{color: 'black', text: waypoint.location?.label, fontWeight: 'bold'}"></agm-marker>
+        <agm-direction [origin]="origin" [destination]="destination" [waypoints]="waypoints"></agm-direction>
+      </agm-map>
+</div>

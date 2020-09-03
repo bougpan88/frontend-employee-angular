@@ -1,0 +1,102 @@
+<br/>
+<br/>
+<form [formGroup]="findFromAttributeForm" (ngSubmit)="onSubmit()">
+      
+    <div class="form-group">
+        <div class="white-text">
+        <label>Attribute</label>
+        <select class="form-control" formControlName="attributeName">
+          <option *ngFor="let attributeName of allAttributeNames" [value]="attributeName">{{attributeName}}</option>
+        </select>
+    </div>
+    <div class="red-text">
+        <span class="validation-message red-text" *ngIf="(findFromAttributeForm.controls['attributeName'].dirty || findFromAttributeForm.controls['attributeName'].touched) && findFromAttributeForm.controls['attributeName'].invalid && findFromAttributeForm.controls['attributeName']?.errors?.required">
+            Attribute Name is required.
+        </span>
+    </div>
+      </div>
+
+    <div class="form-group">
+      <div class="white-text">
+      <label>Attribute Value</label>
+      <input class="form-control" type="text" formControlName="attributeValue">
+    </div>
+    <div class="red-text">
+        <span class="validation-message red-text" *ngIf="(findFromAttributeForm.controls['attributeValue'].dirty || findFromAttributeForm.controls['attributeValue'].touched) && findFromAttributeForm.controls['attributeValue'].invalid && findFromAttributeForm.controls['attributeValue']?.errors?.required">
+          Attribute Value is required.
+        </span>
+    </div>
+    </div>
+    <button class="btn btn-primary" type="submit" (click)="onSubmit()">search</button>
+</form>
+
+<div *ngIf = "loading">
+    <br/>
+    <mat-spinner class="centered" color="warn"></mat-spinner>
+  </div>
+
+<div *ngIf = "!loading">  
+<br/>
+<br/>
+<div class="example-container mat-elevation-z8">
+    <mat-table #table [dataSource]="dataSource" matSort>
+
+        <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> ID. </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+        </ng-container>
+
+        <!-- Date of Hire Column -->
+        <ng-container matColumnDef="hireDate">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Date of Hire </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.hireDate | dateFormat}} </mat-cell>
+        </ng-container>
+
+       <!-- Address Column -->
+       <ng-container matColumnDef="address">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Address </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
+        </ng-container>
+
+        <!-- Has a Car Column -->
+       <ng-container matColumnDef="hasCar">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Car </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.hasCar | carBooleanTransform}} </mat-cell>
+       </ng-container>
+
+       <!-- Birth Date Column -->
+       <ng-container matColumnDef="birthDate">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Date of Birth </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.birthDate | dateFormat}} </mat-cell>
+       </ng-container>
+
+       <!-- Supervisor Column -->
+       <ng-container matColumnDef="supervisorId">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Supervisor ID </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.supervisorId}} </mat-cell>
+       </ng-container>
+
+       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;" matRipple class="element-row" [cdkDetailRow]="row" [cdkDetailRowTpl]="tpl"
+          (click)="selection.toggle(row)" 
+      [ngClass]="{hovered: row.hovered, highlighted: selection.isSelected(row)}"
+      (mouseover)="row.hovered = true" (mouseout)="row.hovered = false">
+          </mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 25, 50, 100]"></mat-paginator>
+</div>
+
+<div class="continue">
+<button class="btn btn-primary" type="button" [routerLink]="[mapDirectionsRoute]" [queryParams]="{id:selection.selected[0]?.id, attributeName: this.findFromAttributeForm.get('attributeName')?.value , attributeValue: this.findFromAttributeForm.get('attributeValue')?.value }" [disabled]="selection.isEmpty()">Continue</button>
+</div>
+</div>

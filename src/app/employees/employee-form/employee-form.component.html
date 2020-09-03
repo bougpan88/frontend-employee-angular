@@ -1,0 +1,91 @@
+<div *ngIf = "loading">
+  <br/>
+  <mat-spinner class="centered" color="warn"></mat-spinner>
+</div>
+
+<div *ngIf = "!loading">
+<br/>
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-group white-text">
+      <label>Name:</label>
+      <input class="form-control" type="text" formControlName="name">
+      <span class="validation-message" *ngIf="(employeeForm.controls['name'].dirty || employeeForm.controls['name'].touched) && employeeForm.controls['name'].invalid && employeeForm.controls['name']?.errors?.required">
+        Name is required.
+      </span>
+    </div>
+  
+    <div class="form-group white-text">
+      <label>Date of hire:</label>
+      <input class="form-control"  type="date" formControlName="hireDate">
+      <span class="validation-message" *ngIf="(employeeForm.controls['hireDate'].dirty || employeeForm.controls['hireDate'].touched) && employeeForm.controls['hireDate'].invalid && employeeForm.controls['hireDate']?.errors?.required">
+        Date of hire is required.
+      </span>
+    </div>
+
+    <div class="form-group white-text">
+      <label>Address:</label>
+      <input class="form-control" type="text" formControlName="address">
+      <span class="validation-message" *ngIf="(employeeForm.controls['address'].dirty || employeeForm.controls['address'].touched) && employeeForm.controls['address'].invalid && employeeForm.controls['address']?.errors?.required">
+        Address is required.
+      </span>
+    </div>
+
+    <div class="form-group white-text">
+      <label>Has a car:</label>
+      <select class="form-control" formControlName="hasCar">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+      <span class="validation-message" *ngIf="(employeeForm.controls['hasCar'].dirty || employeeForm.controls['hasCar'].touched) && employeeForm.controls['hasCar'].invalid && employeeForm.controls['hasCar']?.errors?.required">
+        Car selection is required.
+      </span>
+    </div>
+
+    <div class="form-group white-text">
+      <label>Date of birth:</label>
+      <input class="form-control" type="date" formControlName="birthDate">
+      <span class="validation-message" *ngIf="(employeeForm.controls['birthDate'].dirty || employeeForm.controls['birthDate'].touched) && employeeForm.controls['birthDate'].invalid && employeeForm.controls['birthDate']?.errors?.required">
+        Date of birth is required.
+      </span>
+    </div>
+
+    <div class="form-group white-text">
+      <label>Supervisor ID:</label>
+      <select class="form-control" formControlName="supervisorId">
+        <option *ngFor="let employeeId of allEmployeeIds" [value]="employeeId">{{employeeId}}</option>
+      </select>
+    </div>
+
+
+    <div class="form-group white-text">
+      <label>Attributes</label>
+      <br/>
+      <button class="btn btn-primary padding-down" type="button" (click) = createAttribute()>Add Attribute</button>
+      <div formArrayName="attributesForm" *ngFor="let control of getFormArray().controls; let i = index;">
+        <div class="padding-down" [formGroupName]="i">
+          <select class="form-control custom-width" formControlName="attributeName" placeholder="Item name" (change)="validateAttributes()">
+            <option *ngFor="let attributeName of allAttributeNames" [value]="attributeName">{{attributeName}}</option>
+          </select>
+          <input class="form-control custom-width" formControlName="attributeValue" placeholder="Attribute Value">
+          <button class="btn btn-primary twenty-percent-width" type="button" (click) = removeAttribute(i)>X</button>
+          <span class="validation-message" *ngIf="(control.controls['attributeName'].dirty || control.controls['attributeName'].touched) && control.controls['attributeName'].invalid && control.controls['attributeName']?.errors?.required">
+            Attribute selection is required.
+          </span>
+          <span class="validation-message" *ngIf="control.controls['attributeName'].errors?.duplicate">
+            This Attribute already exists.
+          </span>
+          <span class="validation-message" *ngIf="(control.controls['attributeValue'].dirty || control.controls['attributeValue'].touched) && control.controls['attributeValue'].invalid && control.controls['attributeValue']?.errors?.required">
+            Attribute value is required.
+          </span>
+        </div>
+      </div>
+    </div>
+
+
+    <button class="btn btn-primary" type="submit" [disabled]="!employeeForm.valid">Save</button>
+    <a [href]="employeeRoute" class="btn btn-primary btn-padding">Cancel</a>
+
+</form>
+</div>
+

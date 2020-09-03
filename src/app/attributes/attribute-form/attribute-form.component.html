@@ -1,0 +1,17 @@
+<br/>
+<br/>
+<form [formGroup]="attributeForm" (ngSubmit)="onSubmit()">
+    <div class="form-group white-text">
+        <label>Attribute name:</label>
+        <input class="form-control" type="text" formControlName="name" (change)="validateForDuplicate()">
+        <span class="validation-message" *ngIf="(attributeForm.controls['name'].dirty || attributeForm.controls['name'].touched) && attributeForm.controls['name'].invalid && attributeForm.controls['name']?.errors?.required">
+          Name is required.
+        </span>
+        <span class="validation-message" *ngIf="attributeForm.controls['name'].errors?.duplicate">
+            This Attribute already exists.
+          </span>
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="!attributeForm.valid">Save</button>
+      <a [href]="attributeRoute" class="btn btn-primary btn-padding">Cancel</a>
+</form>

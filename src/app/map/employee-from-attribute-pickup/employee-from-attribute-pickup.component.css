@@ -1,0 +1,20 @@
+.white-text{
+    color: white;
+}
+
+.red-text{
+    color: red;
+}
+
+.mat-row.hovered {
+    background: #eee;
+}
+
+.mat-row.highlighted {
+  background: #999;
+}
+
+.continue{
+    padding-top: 25px;
+    text-align: right;
+}

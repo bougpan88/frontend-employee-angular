@@ -1,0 +1,43 @@
+<div *ngIf = "loading">
+  <br/>
+  <mat-spinner class="centered" color="warn"></mat-spinner>
+</div>
+
+<div *ngIf = "!loading">
+<br/>
+<br/>
+<form [formGroup]="filterForm">
+  <span class="form-group white-text padding-bottom">
+      <input class="form-control small-width" placeholder="Filter" type="text" formControlName="filterValue" (keyup)="updateShownAttributes()">
+      <button class="btn btn-primary" type="button" [routerLink]="[attributeFormRoute]">Create attribute</button>
+  </span>
+</form>
+<br/>
+<br/>
+<div fxLayout="row wrap" fxLayoutGap="1.5% grid" fxLayoutAlign="start center" fxLayout.lt-sm="column">
+
+  <div infinite-scroll
+  [infiniteScrollDistance]="scrollDistance"
+  [infiniteScrollUpDistance]="scrollUpDistance"
+  [infiniteScrollThrottle]="throttle"
+  (scrolled)="onScrollDown()" fxFlex="nogrow" *ngFor="let attribute of array">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{attribute}}</mat-card-title>
+        <div class ="padding-right">
+          <a [routerLink]="[attributeFormRoute]" [queryParams]="{name:attribute}">
+            <mat-icon>edit</mat-icon>
+          </a>
+        </div>
+        <div>
+          <a [href] ="[attributesRoute]" (click) = deleteAttribute(attribute)>
+            <mat-icon>delete</mat-icon>
+          </a>
+        </div>
+        </mat-card-header>
+      </mat-card>
+    </div>   
+</div>
+<br/>
+<br/>
+</div>

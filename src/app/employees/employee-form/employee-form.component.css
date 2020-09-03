@@ -1,0 +1,40 @@
+.btn-padding {
+    margin-left: 15px;
+}
+
+.padding-down {
+    margin-bottom: 18px;
+}
+
+
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
+    border: 1px solid red !important;
+}
+
+.validation-message{
+    font-size: 12px;
+}
+
+.custom-width{
+    display:inline-block;
+    width: 45%;
+}
+
+.twenty-percent-width{
+    display:inline-block;
+    width: 10%;
+}
+
+.white-text{
+    color: white;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  }
