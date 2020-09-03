@@ -1,5 +1,10 @@
 # EmployerAngular
 
+#Google Api key must configured in app.module.ts
+AgmCoreModule.forRoot({ // @agm/core
+      apiKey: 'here goes api key',
+    })
+
 ## run ng serve --configuration=dev --optimization=false -> for developer
 Optimization = false does not allow cli to minify and uglify the code!!!
 ## run ng serve --configuration=prod   -> for production
