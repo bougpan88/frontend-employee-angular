@@ -7,7 +7,7 @@ AgmCoreModule.forRoot({ // @agm/core
 
 ## run ng serve --configuration=dev --optimization=false -> for developer
 Optimization = false does not allow cli to minify and uglify the code!!!
-## run ng serve --configuration=prod   -> for production
+## run ng serve --configuration=production    -> for production
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.1.
 

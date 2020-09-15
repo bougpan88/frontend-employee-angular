@@ -39,8 +39,10 @@ export class EmployeeService {
                );
   }
 
-  public updateEmployee(employee: Employee): Observable<any> {
-    return this.http.put<Error>(environment.apiUrl + '/employees', employee)
+  public updateEmployee(employee: Employee, employeeId: number): Observable<any> {
+    //Id according to API should be send in the url not in the body
+    employee.id = undefined;
+    return this.http.put<Error>(environment.apiUrl + '/employees/'+ employeeId, employee)
     .pipe(catchError((error: HttpErrorResponse) => this.customErrorHandler.handleHttpError(error)) 
     );
   }

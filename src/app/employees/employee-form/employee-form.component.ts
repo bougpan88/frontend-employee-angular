@@ -198,7 +198,7 @@ export class EmployeeFormComponent implements OnInit {
 
   sendPersistEmployeeRequest(employee: Employee) : void {
     this.loading = true;
-    const id : number = employee.id!;
+    const id : number | null | undefined = employee.id;
     if (id == null || Number.isNaN(id)){
     this.employeeService.createEmployee(employee).subscribe((resp: any)=> {
     //only after succesfull update let the employees view refresh
@@ -206,7 +206,7 @@ export class EmployeeFormComponent implements OnInit {
     this.navigateNext(resp);
     });
   } else {
-    this.employeeService.updateEmployee(employee).subscribe((resp: any)=> {
+    this.employeeService.updateEmployee(employee, id).subscribe((resp: any)=> {
     //only after succesfull update let the employees view refresh
     this.loading = false;
     this.navigateNext(resp);
