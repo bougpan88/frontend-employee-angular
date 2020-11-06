@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 import { routePaths } from '../../routes';
 import { Employee } from '../../_models/EmployeeModel'
@@ -7,6 +7,7 @@ import { EmployeeService } from '../../services/employee.service';
 import { AttributeService } from '../../services/attribute.service';
 import { Attribute } from '../../_models/AttributeModel';
 import { NGXLogger } from 'ngx-logger';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -14,7 +15,7 @@ import { NGXLogger } from 'ngx-logger';
   templateUrl: './employee-form.component.html',
   styleUrls: ['./employee-form.component.css']
 })
-export class EmployeeFormComponent implements OnInit {
+export class EmployeeFormComponent implements OnInit, OnDestroy {
 
   employeeRoute = routePaths.employeeRoute;
   attributesForm: FormArray;
@@ -24,6 +25,10 @@ export class EmployeeFormComponent implements OnInit {
   employee: Employee = {};
   allAttributeNames : Array<String> = [];
   loading : boolean = true;
+
+  getEmployeeSubscription : Subscription | undefined;
+  createEmployeeSubscription : Subscription | undefined;
+  updateEmployeeSubscription : Subscription | undefined;
 
   constructor(private route: ActivatedRoute,
       private employeeService: EmployeeService,
@@ -43,6 +48,11 @@ export class EmployeeFormComponent implements OnInit {
       });
       this.attributesForm = this.getFormArray();
    }
+  ngOnDestroy(): void {
+    this.getEmployeeSubscription?.unsubscribe();
+    this.updateEmployeeSubscription?.unsubscribe();
+    this.createEmployeeSubscription?.unsubscribe();
+  }
 
   ngOnInit(): void {
     const id : number = parseInt(this.route.snapshot.queryParamMap.get('id')!);
@@ -189,7 +199,7 @@ export class EmployeeFormComponent implements OnInit {
   }
 
   getEmployee(id: number) :void {
-    this.employeeService.getEmployee(id).subscribe((resp: any)=> {
+    this.getEmployeeSubscription = this.employeeService.getEmployee(id).subscribe((resp: any)=> {
       this.logger.info(resp);
       this.employee = resp;
       this.updateFormFromEmployee();
@@ -200,13 +210,13 @@ export class EmployeeFormComponent implements OnInit {
     this.loading = true;
     const id : number | null | undefined = employee.id;
     if (id == null || Number.isNaN(id)){
-    this.employeeService.createEmployee(employee).subscribe((resp: any)=> {
+    this.createEmployeeSubscription = this.employeeService.createEmployee(employee).subscribe((resp: any)=> {
     //only after succesfull update let the employees view refresh
     this.loading = false;
     this.navigateNext(resp);
     });
   } else {
-    this.employeeService.updateEmployee(employee, id).subscribe((resp: any)=> {
+    this.updateEmployeeSubscription = this.employeeService.updateEmployee(employee, id).subscribe((resp: any)=> {
     //only after succesfull update let the employees view refresh
     this.loading = false;
     this.navigateNext(resp);

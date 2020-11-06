@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { FormGroup,FormControl, FormArray, FormBuilder, Validators, ReactiveFormsModule  } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { routePaths } from '../routes'
-import { Observable, throwError } from 'rxjs';
+import { Observable, Subscription, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
@@ -12,20 +12,25 @@ import { NGXLogger } from 'ngx-logger';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   homeRoute : string = routePaths.homeRoute;
   authForm: FormGroup = new FormGroup({
     userNameControl: new FormControl('', [Validators.required]),
-    passwordControl: new FormControl('', [Validators.required])
-});;
+    passwordControl: new FormControl('', [Validators.required])});;
   isSubmitted  =  false;
   loading = false;
+
+  loginSubscription : Subscription | undefined;
 
   constructor(private authService: AuthService,
     private router :Router,
     private route: ActivatedRoute,
     private logger: NGXLogger) { }
+  
+  ngOnDestroy(): void {
+    this.loginSubscription?.unsubscribe();
+  }
 
   ngOnInit() {}
 
@@ -39,8 +44,8 @@ onSubmit() {
       return;
   }
   this.loading = true;
-  this.authService.login(this.authForm.get('userNameControl')?.value,
-                         this.authForm.get('passwordControl')?.value)
+  this.loginSubscription = this.authService.login(this.authForm.get('userNameControl')?.value,
+                                                  this.authForm.get('passwordControl')?.value)
       .pipe(catchError((): Observable<any> => {
         this.loading = false;
         this.authForm.setErrors({ authError: { failed: true}});

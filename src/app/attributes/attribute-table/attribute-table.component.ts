@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AttributeService } from '../../services/attribute.service';
 import { MatPaginator } from '@angular/material/paginator';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { routePaths } from '../../routes';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -12,7 +12,7 @@ import { NGXLogger } from 'ngx-logger';
   templateUrl: './attribute-table.component.html',
   styleUrls: ['./attribute-table.component.css']
 })
-export class AttributeTableComponent implements OnInit {
+export class AttributeTableComponent implements OnInit, OnDestroy {
 
   // These here are needed for infinite scroll
   array : any[] = [];
@@ -30,6 +30,9 @@ export class AttributeTableComponent implements OnInit {
   loading : boolean = true;
   filterForm : FormGroup;
 
+  attributeNamesSubscription : Subscription | undefined;
+  deleteAttributeSubscription : Subscription | undefined;
+
   constructor(private attributeService: AttributeService,
               private logger: NGXLogger) {
       this.filterForm = new FormGroup({
@@ -42,7 +45,7 @@ export class AttributeTableComponent implements OnInit {
 
   getAllAttributeNames(): void {
     this.loading = true;
-    this.attributeService.getAllAttributeNames().subscribe((resp: any)=> {
+    this.attributeNamesSubscription = this.attributeService.getAllAttributeNames().subscribe((resp: any)=> {
       if (resp == null){
         resp = [];
       }
@@ -54,12 +57,14 @@ export class AttributeTableComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    this.attributeNamesSubscription?.unsubscribe();
+    this.deleteAttributeSubscription?.unsubscribe();
   }
 
   deleteAttribute(name: String) :void {
     if(confirm("Are you sure you want to delete attribute "+ name + "?")) {
       this.loading = true;
-      this.attributeService.deleteAttribute(name).subscribe((resp: any)=> {
+      this.deleteAttributeSubscription = this.attributeService.deleteAttribute(name).subscribe((resp: any)=> {
         this.logger.info(resp);
         this.loading = false;
       });

@@ -1,5 +1,5 @@
 import {routePaths} from '../../routes';
-import {Component, OnInit, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, OnInit, ViewChild, AfterViewInit, OnDestroy} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -10,6 +10,7 @@ import { Employee } from '../../_models/EmployeeModel';
 import { EmployeeService } from '../../services/employee.service';
 import {CdkDetailRowDirective} from './cdk-detail-row.directive'
 import { NGXLogger } from 'ngx-logger';
+import { Subscription } from 'rxjs';
 
 /**
  * @title Table
@@ -26,7 +27,7 @@ import { NGXLogger } from 'ngx-logger';
     ]),
   ],
 })
-export class EmployeeTable implements OnInit, AfterViewInit {
+export class EmployeeTable implements OnInit, OnDestroy, AfterViewInit {
   
   employeeRoute = routePaths.employeeRoute;
   employeeFormRoute = '/' + routePaths.employeeFormRoute;
@@ -35,14 +36,20 @@ export class EmployeeTable implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<Employee>();
   loading : boolean = true;
   
-
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   @ViewChild(MatSort) sort?: MatSort;
+
+  getAllEmployeesSubscription : Subscription | undefined;
+  deleteEmployeeSubscription : Subscription | undefined;
 
   constructor(private employeeService : EmployeeService,
               private logger: NGXLogger) {
      
    }
+  ngOnDestroy(): void {
+    this.deleteEmployeeSubscription?.unsubscribe();
+    this.getAllEmployeesSubscription?.unsubscribe();
+  }
 
   isExpansionDetailRow = (index: any, row : any) => row.hasOwnProperty('detailRow');
 
@@ -63,7 +70,7 @@ export class EmployeeTable implements OnInit, AfterViewInit {
 
   getAllEmployees() :void {
     this.loading = true;
-    this.employeeService.getAllEmployees().subscribe((resp: any)=> {
+    this.getAllEmployeesSubscription = this.employeeService.getAllEmployees().subscribe((resp: any)=> {
       if (resp == null){
         resp = [];
       }
@@ -77,7 +84,7 @@ export class EmployeeTable implements OnInit, AfterViewInit {
   deleteEmployee(id: number) :void {
     this.loading = true;
       if(confirm("Are you sure you want to delete employee with Id "+ id + "?")) {
-        this.employeeService.deleteEmployee(id).subscribe((resp: any)=> {
+        this.deleteEmployeeSubscription = this.employeeService.deleteEmployee(id).subscribe((resp: any)=> {
           this.logger.info(resp);
           this.loading = false;
         });

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AttributeService } from '../../services/attribute.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MatTableDataSource} from '@angular/material/table';
@@ -8,13 +8,14 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import {routePaths} from '../../routes';
 import { NGXLogger } from 'ngx-logger';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-employee-from-attribute-pickup',
   templateUrl: './employee-from-attribute-pickup.component.html',
   styleUrls: ['./employee-from-attribute-pickup.component.css']
 })
-export class EmployeeFromAttributePickupComponent implements OnInit {
+export class EmployeeFromAttributePickupComponent implements OnInit, OnDestroy {
 
   mapDirectionsRoute = '/' + routePaths.mapDirectionsRoute;
   allAttributeNames : Array<String> = [];
@@ -23,7 +24,8 @@ export class EmployeeFromAttributePickupComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'hireDate', 'address','hasCar','birthDate','supervisorId'];
   loading : boolean = false;
 
-
+  allAttributeNamesSubscription : Subscription | undefined;
+  employeesWithAttributeSubscription : Subscription | undefined;
 
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   
@@ -36,6 +38,11 @@ export class EmployeeFromAttributePickupComponent implements OnInit {
   constructor(private attributeService: AttributeService,
               private employeeService: EmployeeService,
               private logger: NGXLogger) {}
+  
+  ngOnDestroy(): void {
+    this.allAttributeNamesSubscription?.unsubscribe();
+    this.employeesWithAttributeSubscription?.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.getAllAttributeNames();
@@ -48,7 +55,7 @@ export class EmployeeFromAttributePickupComponent implements OnInit {
   }
 
   getAllAttributeNames(): void {
-    this.attributeService.getAllAttributeNames().subscribe((resp: any)=> {
+    this.allAttributeNamesSubscription = this.attributeService.getAllAttributeNames().subscribe((resp: any)=> {
       this.logger.info(resp);
       this.allAttributeNames = resp;
     });
@@ -56,7 +63,7 @@ export class EmployeeFromAttributePickupComponent implements OnInit {
 
   getAllEmployeesWithAttribute(attributeName : string, attributeValue : string) :void {
     this.loading = true;
-    this.employeeService.getAllEmployeesWithAttribute(attributeName, attributeValue).subscribe((resp: any)=> {
+    this.employeesWithAttributeSubscription = this.employeeService.getAllEmployeesWithAttribute(attributeName, attributeValue).subscribe((resp: any)=> {
       this.logger.info(resp);
       this.dataSource.data = resp;
       this.loading = false;
