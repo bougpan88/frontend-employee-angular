@@ -8,12 +8,12 @@
 
     <span class="example-spacer"></span>
     <div fxShow="true" fxHide.lt-md="true">
-      <a mat-button [routerLink]= "[homeRoute]">Home</a>
-      <a mat-button [routerLink]= "[profileRoute]">Profile</a>
-      <a mat-button [routerLink]= "[employeeRoute]">Employees</a>
-      <a mat-button [routerLink]= "[attributesRoute]">Attribute</a>
-      <a mat-button [routerLink]= "[mapRoute]">Map</a>
-      <a mat-button (click)="logout()">Logout</a>
+      <a mat-button [routerLink]= "[homeRoute]" routerLinkActive = "active" [routerLinkActiveOptions] = "{exact: true}">Home</a>
+      <a mat-button [routerLink]= "[profileRoute]" routerLinkActive = "active">Profile</a>
+      <a mat-button [routerLink]= "[employeeRoute]" routerLinkActive = "active">Employees</a>
+      <a mat-button [routerLink]= "[attributesRoute]" routerLinkActive = "active">Attribute</a>
+      <a mat-button [routerLink]= "[mapRoute]" routerLinkActive = "active">Map</a>
+      <a mat-button (click)="logout()" routerLinkActive = "active">Logout</a>
     </div>
 
   </mat-toolbar>
@@ -21,12 +21,12 @@
 
     <mat-sidenav color="primary" #sidenav fxLayout="column" mode="over"  opened="false" fxHide.gt-sm="true">
       <div fxLayout="column">
-        <a mat-button [routerLink]= "[homeRoute]">Home</a>
-        <a mat-button [routerLink]= "[profileRoute]">Profile</a>
-        <a mat-button [routerLink]= "[employeeRoute]">Employees</a>
-        <a mat-button [routerLink]= "[attributesRoute]">Attribute</a>
-        <a mat-button [routerLink]= "[mapRoute]">Map</a>
-        <a mat-button (click)="logout()">Logout</a>
+        <a mat-button [routerLink]= "[homeRoute] " routerLinkActive = "active" [routerLinkActiveOptions] = "{exact: true}">Home</a>
+        <a mat-button [routerLink]= "[profileRoute]" routerLinkActive = "active">Profile</a>
+        <a mat-button [routerLink]= "[employeeRoute]" routerLinkActive = "active">Employees</a>
+        <a mat-button [routerLink]= "[attributesRoute]" routerLinkActive = "active">Attribute</a>
+        <a mat-button [routerLink]= "[mapRoute]" routerLinkActive = "active">Map</a>
+        <a mat-button (click)="logout()" routerLinkActive = "active">Logout</a>
       </div>
     </mat-sidenav>
    
